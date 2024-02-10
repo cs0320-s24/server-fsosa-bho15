@@ -10,7 +10,7 @@ import java.io.Reader;
 import java.util.List;
 
 /** The Main class of our project. This is where execution begins. */
-public final class Main {
+public final class Main_old {
   /**
    * The initial method called when execution begins.
    *
@@ -61,10 +61,10 @@ public final class Main {
       }
     }
 
-    new Main(args).run(args[0], args[2], hasHeader, column, nameOrNum);
+    new Main_old(args).run(args[0], args[2], hasHeader, column, nameOrNum);
   }
 
-  private Main(String[] args) {}
+  private Main_old(String[] args) {}
 
   /** Runs the parser */
   private void run(
