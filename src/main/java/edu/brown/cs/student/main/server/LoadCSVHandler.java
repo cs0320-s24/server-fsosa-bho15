@@ -1,4 +1,4 @@
-package edu.brown.cs.student.main.searchcsv;
+package edu.brown.cs.student.main.server;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,11 +13,11 @@ public class LoadCSVHandler implements Route {
     String filePath = request.queryParams("filePath");
     // Creates a hashmap to store the results of the request
     Map<String, Object> responseMap = new HashMap<>();
-//    try {
-//
-//    } catch (Exception e) {
-//
-//    }
+    try {
+
+    } catch (Exception e) {
+
+    }
     return null;
   }
 
