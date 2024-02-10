@@ -17,6 +17,7 @@ public class Server {
         });
 
     // Setting up the handler for the GET /order and /activity endpoints
+    Spark.get("load", new LoadCSVHandler());
     Spark.init();
     Spark.awaitInitialization();
 
