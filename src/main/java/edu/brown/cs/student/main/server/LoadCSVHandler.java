@@ -17,7 +17,7 @@ public class LoadCSVHandler implements Route {
     Map<String, Object> responseMap = new HashMap<>();
     File tmpDir = new File("data/" + filepath);
     boolean exists = tmpDir.exists();
-    System.out.println(exists);
+    System.out.println(filepath);
     if (!exists) {
       responseMap.put("result", "Exception");
     } else {
