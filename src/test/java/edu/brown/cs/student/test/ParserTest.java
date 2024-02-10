@@ -2,7 +2,7 @@ package edu.brown.cs.student.test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import edu.brown.cs.student.main.CSVParser.Parser;
+import edu.brown.cs.student.main.csvparser.Parser;
 import edu.brown.cs.student.main.exceptions.FactoryFailureException;
 import edu.brown.cs.student.main.objectCreators.GeneralCreatorFromRow;
 import java.io.*;

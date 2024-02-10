@@ -1,8 +1,8 @@
 package edu.brown.cs.student.main;
 
-import edu.brown.cs.student.main.Creators.Creator;
-import edu.brown.cs.student.main.FunctionalClasses.CSVParser;
-import edu.brown.cs.student.main.FunctionalClasses.Searcher;
+import edu.brown.cs.student.main.csvparser.creators.Creator;
+import edu.brown.cs.student.main.csvparser.functionalclasses.CSVParser;
+import edu.brown.cs.student.main.csvparser.functionalclasses.Searcher;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

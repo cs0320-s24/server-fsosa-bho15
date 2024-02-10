@@ -1,4 +1,4 @@
-package edu.brown.cs.student.main.FunctionalClasses;
+package edu.brown.cs.student.main.csvparser.functionalclasses;
 
 import java.util.List;
 

@@ -2,8 +2,8 @@ package edu.brown.cs.student.test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import edu.brown.cs.student.main.CSVParser.Parser;
-import edu.brown.cs.student.main.CSVParser.Search;
+import edu.brown.cs.student.main.csvparser.Parser;
+import edu.brown.cs.student.main.csvparser.Search;
 import edu.brown.cs.student.main.exceptions.FactoryFailureException;
 import edu.brown.cs.student.main.exceptions.MissingAttributeException;
 import edu.brown.cs.student.main.objectCreators.EarningsByRaceFromRow;

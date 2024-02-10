@@ -1,7 +1,7 @@
-package edu.brown.cs.student.main.FunctionalClasses;
+package edu.brown.cs.student.main.csvparser.functionalclasses;
 
-import edu.brown.cs.student.main.Creators.CreatorFromRow;
-import edu.brown.cs.student.main.Creators.FactoryFailureException;
+import edu.brown.cs.student.main.csvparser.creators.CreatorFromRow;
+import edu.brown.cs.student.main.csvparser.creators.FactoryFailureException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
