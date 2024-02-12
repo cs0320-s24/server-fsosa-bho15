@@ -1,7 +1,5 @@
 package edu.brown.cs.student.main.server;
 
-import edu.brown.cs.student.main.census.Census;
-import edu.brown.cs.student.main.census.CensusAPIUtilities;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -19,20 +17,20 @@ public class CensusHandler implements Route {
   @Override
   public Object handle(Request request, Response response) throws Exception {
     String state = request.queryParams("state");
-    int stateCode = 6; // temp
+    String stateCode = "06"; // temp
     // int stateCode = requestStateCode(state);
     String county = request.queryParams("county");
-    int countyCode = 31; // temp
+    String countyCode = "031"; // temp
     // int countyCode = requestCountyCode(county);
     Map<String, Object> responseMap = new HashMap<>();
     try {
       // Sends a request to the API and receives JSON back
       String censusJson = this.sendRequest(stateCode, countyCode);
-      // Deserializes JSON into an Activity
-      Census census = CensusAPIUtilities.deserializeCensus(censusJson);
+      // Deserializes JSON into a Census
+      // Census census = CensusAPIUtilities.deserializeCensus(censusJson);
       // Adds results to the responseMap
       responseMap.put("result", "success");
-      responseMap.put("census", census);
+      responseMap.put("census", censusJson);
       return responseMap;
     } catch (Exception e) {
       e.printStackTrace();
@@ -44,7 +42,7 @@ public class CensusHandler implements Route {
     return responseMap;
   }
 
-  private String sendRequest(int stateCode, int countyCode)
+  private String sendRequest(String stateCode, String countyCode)
       throws URISyntaxException, IOException, InterruptedException {
     HttpRequest buildCensusApiRequest =
         HttpRequest.newBuilder()
