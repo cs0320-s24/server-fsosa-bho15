@@ -46,7 +46,6 @@ public class CSVParser<T> {
         line = br.readLine();
       } catch (IOException e) {
         System.err.println("IO Error.");
-        System.exit(0);
       }
       if (line != null) {
         String[] result = regexSplitCSVRow.split(line);

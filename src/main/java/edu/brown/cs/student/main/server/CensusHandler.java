@@ -1,6 +1,5 @@
 package edu.brown.cs.student.main.server;
 
-import edu.brown.cs.student.main.census.Census;
 import edu.brown.cs.student.main.census.CensusAPIUtilities;
 import java.io.IOException;
 import java.net.URI;
@@ -21,7 +20,7 @@ public class CensusHandler implements Route {
   @Override
   public Object handle(Request request, Response response) throws Exception {
     String state = request.queryParams("state");
-    //String stateCode = "06"; // temp
+    // String stateCode = "06"; // temp
     String stateCode = requestStateCode(state);
     String county = request.queryParams("county");
     String countyCode = "031"; // temp
@@ -31,7 +30,7 @@ public class CensusHandler implements Route {
       // Sends a request to the API and receives JSON back
       List<List<String>> censusJson = this.sendRequest(stateCode, countyCode);
       // Deserializes JSON into a Census
-//      Census census = CensusAPIUtilities.deserializeCensus(censusJson);
+      //      Census census = CensusAPIUtilities.deserializeCensus(censusJson);
       // Adds results to the responseMap
       responseMap.put("result", "success");
       responseMap.put("census", CensusAPIUtilities.deserializeCensus(censusJson));
@@ -71,7 +70,8 @@ public class CensusHandler implements Route {
     System.out.println(sentCensusApiResponse);
     System.out.println(sentCensusApiResponse.body());
 
-    return sentCensusApiResponse.body();
+    //    return sentCensusApiResponse.body();
+    return null;
   }
 
   private String requestStateCode(String stateName)
@@ -84,9 +84,7 @@ public class CensusHandler implements Route {
 
     // Send that API request then store the response in this variable. Note the generic type.
     HttpResponse<String> sentCensusApiResponse =
-        HttpClient.newBuilder()
-            .build()
-            .send(buildCensusApiRequest, BodyHandlers.ofString());
+        HttpClient.newBuilder().build().send(buildCensusApiRequest, BodyHandlers.ofString());
     System.out.println(sentCensusApiResponse);
     return "";
   }

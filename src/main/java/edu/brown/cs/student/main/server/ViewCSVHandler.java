@@ -17,6 +17,7 @@ public class ViewCSVHandler implements Route {
 
   private CSVParser<List<String>> csvParser;
   private List<List<String>> csv;
+
   public ViewCSVHandler() {
     this.csvParser = null;
     this.csv = null;
@@ -29,11 +30,12 @@ public class ViewCSVHandler implements Route {
       responseMap.put("result", "error_data_not_loaded");
       return responseMap;
     } else if (this.csv == null) {
-      //TODO: handle any error that happens on parse
+      // TODO: handle any error that happens on parse
       this.csv = this.csvParser.parse();
     }
     responseMap.put("result", "success");
-    return this.csv;
+    responseMap.put("csv", this.csv);
+    return responseMap;
   }
 
   public void load(String filepath) throws DataSourceException {
