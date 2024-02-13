@@ -16,7 +16,7 @@ public class Server {
           response.header("Access-Control-Allow-Methods", "*");
         });
 
-    // Setting up the handler for the GET /order and /activity endpoints
+    // Setting up the handler for the GET csv and census endpoints
     ViewCSVHandler viewHandler = new ViewCSVHandler();
 
     Spark.get("load", new LoadCSVHandler(viewHandler));

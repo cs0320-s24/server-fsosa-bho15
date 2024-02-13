@@ -3,5 +3,5 @@ package edu.brown.cs.student.main.census;
 public class Census {
   private String state;
   private String county;
-  public String percentage;
+  private String S2802_C03_022E;
 }

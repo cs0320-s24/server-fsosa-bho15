@@ -9,7 +9,6 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import spark.Request;
 import spark.Response;
@@ -17,20 +16,28 @@ import spark.Route;
 
 public class CensusHandler implements Route {
 
+  private boolean called;
+  private Map<String, String> stateCodes;
+  private Map<String, String> countyCodes;
+
+  public CensusHandler() {
+    this.called = false;
+  }
+
   @Override
   public Object handle(Request request, Response response) throws Exception {
     String state = request.queryParams("state");
-    // String stateCode = "06"; // temp
-    String stateCode = requestStateCode(state);
+    //String stateCode = requestStateCode(state);
+    String stateCode = "06"; // temp
+    // String stateCode = requestStateCode(state);
     String county = request.queryParams("county");
     String countyCode = "031"; // temp
     // int countyCode = requestCountyCode(county);
+    this.called = true;
     Map<String, Object> responseMap = new HashMap<>();
     try {
       // Sends a request to the API and receives JSON back
-      List<List<String>> censusJson = this.sendRequest(stateCode, countyCode);
-      // Deserializes JSON into a Census
-      //      Census census = CensusAPIUtilities.deserializeCensus(censusJson);
+      String censusJson = this.sendRequest(stateCode, countyCode);
       // Adds results to the responseMap
       responseMap.put("result", "success");
       responseMap.put("census", CensusAPIUtilities.deserializeCensus(censusJson));
@@ -45,7 +52,7 @@ public class CensusHandler implements Route {
     return responseMap;
   }
 
-  private List<List<String>> sendRequest(String stateCode, String countyCode)
+  private String sendRequest(String stateCode, String countyCode)
       throws URISyntaxException, IOException, InterruptedException {
     HttpRequest buildCensusApiRequest =
         HttpRequest.newBuilder()
@@ -86,19 +93,23 @@ public class CensusHandler implements Route {
     HttpResponse<String> sentCensusApiResponse =
         HttpClient.newBuilder().build().send(buildCensusApiRequest, BodyHandlers.ofString());
     System.out.println(sentCensusApiResponse);
-    return "";
+    String jsonString = sentCensusApiResponse.body();
+    return sentCensusApiResponse.body();
   }
-  //  private int requestCountyCode(String countyName){
-  //    HttpRequest buildBoredApiRequest =
-  //        HttpRequest.newBuilder()
-  //            .uri(new URI("http://www.boredapi.com/api/activity?participants=" + participants))
-  //            .GET()
-  //            .build();
-  //
-  //    // Send that API request then store the response in this variable. Note the generic type.
-  //    HttpResponse<String> sentBoredApiResponse =
-  //        HttpClient.newBuilder()
-  //            .build()
-  //            .send(buildBoredApiRequest, HttpResponse.BodyHandlers.ofString());
-  //  }
+    private String requestCountyCode(String countyName)
+        throws URISyntaxException, IOException, InterruptedException {
+      HttpRequest buildBoredApiRequest =
+          HttpRequest.newBuilder()
+              .uri(new URI("https://api.census.gov/data/2010/dec/sf1?get=NAME&for=county:*"))
+              .GET()
+              .build();
+
+      // Send that API request then store the response in this variable. Note the generic type.
+      HttpResponse<String> sentBoredApiResponse =
+          HttpClient.newBuilder()
+              .build()
+              .send(buildBoredApiRequest, HttpResponse.BodyHandlers.ofString());
+      String code = sentBoredApiResponse.body();
+      return code;
+    }
 }
