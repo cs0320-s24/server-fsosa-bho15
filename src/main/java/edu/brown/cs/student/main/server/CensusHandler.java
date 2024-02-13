@@ -1,6 +1,6 @@
 package edu.brown.cs.student.main.server;
 
-// import edu.brown.cs.student.main.census.Census;
+import edu.brown.cs.student.main.census.Census;
 import edu.brown.cs.student.main.census.CensusAPIUtilities;
 import java.io.IOException;
 import java.net.URI;
@@ -31,7 +31,7 @@ public class CensusHandler implements Route {
       // Sends a request to the API and receives JSON back
       List<List<String>> censusJson = this.sendRequest(stateCode, countyCode);
       // Deserializes JSON into a Census
-      // Census census = CensusAPIUtilities.deserializeCensus(censusJson);
+//      Census census = CensusAPIUtilities.deserializeCensus(censusJson);
       // Adds results to the responseMap
       responseMap.put("result", "success");
       responseMap.put("census", CensusAPIUtilities.deserializeCensus(censusJson));

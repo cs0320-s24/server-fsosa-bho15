@@ -37,6 +37,7 @@ public class CSVParser<T> {
    * @return a list of the type passed into the constructor
    */
   public List<T> parse() {
+    // TODO: remove catch blocks to throw error instead?
     Pattern regexSplitCSVRow = Pattern.compile(",(?=([^\\\"]*\\\"[^\\\"]*\\\")*(?![^\\\"]*\\\"))");
     String line = " ";
     List<T> ret = new ArrayList<>();
