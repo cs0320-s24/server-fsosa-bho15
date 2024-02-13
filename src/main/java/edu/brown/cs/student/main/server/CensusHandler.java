@@ -1,12 +1,16 @@
 package edu.brown.cs.student.main.server;
 
+// import edu.brown.cs.student.main.census.Census;
+import edu.brown.cs.student.main.census.CensusAPIUtilities;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.net.http.HttpResponse.BodyHandlers;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import spark.Request;
 import spark.Response;
@@ -17,20 +21,20 @@ public class CensusHandler implements Route {
   @Override
   public Object handle(Request request, Response response) throws Exception {
     String state = request.queryParams("state");
-    String stateCode = "06"; // temp
-    // int stateCode = requestStateCode(state);
+    //String stateCode = "06"; // temp
+    String stateCode = requestStateCode(state);
     String county = request.queryParams("county");
     String countyCode = "031"; // temp
     // int countyCode = requestCountyCode(county);
     Map<String, Object> responseMap = new HashMap<>();
     try {
       // Sends a request to the API and receives JSON back
-      String censusJson = this.sendRequest(stateCode, countyCode);
+      List<List<String>> censusJson = this.sendRequest(stateCode, countyCode);
       // Deserializes JSON into a Census
       // Census census = CensusAPIUtilities.deserializeCensus(censusJson);
       // Adds results to the responseMap
       responseMap.put("result", "success");
-      responseMap.put("census", censusJson);
+      responseMap.put("census", CensusAPIUtilities.deserializeCensus(censusJson));
       return responseMap;
     } catch (Exception e) {
       e.printStackTrace();
@@ -42,7 +46,7 @@ public class CensusHandler implements Route {
     return responseMap;
   }
 
-  private String sendRequest(String stateCode, String countyCode)
+  private List<List<String>> sendRequest(String stateCode, String countyCode)
       throws URISyntaxException, IOException, InterruptedException {
     HttpRequest buildCensusApiRequest =
         HttpRequest.newBuilder()
@@ -70,7 +74,7 @@ public class CensusHandler implements Route {
     return sentCensusApiResponse.body();
   }
 
-  private int requestStateCode(String stateName)
+  private String requestStateCode(String stateName)
       throws URISyntaxException, IOException, InterruptedException {
     HttpRequest buildCensusApiRequest =
         HttpRequest.newBuilder()
@@ -82,9 +86,9 @@ public class CensusHandler implements Route {
     HttpResponse<String> sentCensusApiResponse =
         HttpClient.newBuilder()
             .build()
-            .send(buildCensusApiRequest, HttpResponse.BodyHandlers.ofString());
+            .send(buildCensusApiRequest, BodyHandlers.ofString());
     System.out.println(sentCensusApiResponse);
-    return 0;
+    return "";
   }
   //  private int requestCountyCode(String countyName){
   //    HttpRequest buildBoredApiRequest =
