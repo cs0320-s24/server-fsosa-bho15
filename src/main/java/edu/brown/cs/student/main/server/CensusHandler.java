@@ -1,7 +1,5 @@
 package edu.brown.cs.student.main.server;
 
-import static spark.Spark.connect;
-
 import edu.brown.cs.student.main.census.CensusAPIUtilities;
 import edu.brown.cs.student.main.exceptions.DataSourceException;
 import java.io.IOException;
@@ -35,12 +33,21 @@ public class CensusHandler implements Route {
   @Override
   public Object handle(Request request, Response response) throws Exception {
     String state = request.queryParams("state");
-    // String stateCode = requestStateCode(state);
-    String stateCode = "06"; // temp
-    // String stateCode = requestStateCode(state);
+    String stateCode = null;
+    URL statesURL = new URL("https://api.census.gov/data/2010/dec/sf1?get=NAME&for=state:*");
+    HttpURLConnection statesJson = connect(statesURL);
+    List<List<String>> states =
+        CensusAPIUtilities.deserializeCensus(new Buffer().readFrom(statesJson.getInputStream()));
+    for (List<String> strings : states) {
+      if (strings.get(0).equals(state)) {
+        stateCode = strings.get(1);
+      }
+    }
+    if (stateCode == null) {
+      System.err.println("Invalid state");
+    }
     String county = request.queryParams("county");
     String countyCode = "031"; // temp
-    // String countyCode = requestCountyCode(county);
     this.called = true;
     Map<String, Object> responseMap = new HashMap<>();
     try {
@@ -55,9 +62,14 @@ public class CensusHandler implements Route {
       HttpURLConnection censusJson = connect(url);
       // Adds results to the responseMap
       responseMap.put("result", "success");
+      responseMap.put("time", new Date());
+      responseMap.put("state", state);
+      responseMap.put("county", county);
       responseMap.put(
-          "census",
-          CensusAPIUtilities.deserializeCensus(new Buffer().readFrom(censusJson.getInputStream())));
+          "percentage",
+          CensusAPIUtilities.deserializeCensus(new Buffer().readFrom(censusJson.getInputStream()))
+              .get(1)
+              .get(1));
       return responseMap;
     } catch (Exception e) {
       e.printStackTrace();
@@ -75,9 +87,8 @@ public class CensusHandler implements Route {
    */
   private static HttpURLConnection connect(URL requestURL) throws DataSourceException, IOException {
     URLConnection urlConnection = requestURL.openConnection();
-    if (!(urlConnection instanceof HttpURLConnection))
+    if (!(urlConnection instanceof HttpURLConnection clientConnection))
       throw new DataSourceException("unexpected: result of connection wasn't HTTP");
-    HttpURLConnection clientConnection = (HttpURLConnection) urlConnection;
     clientConnection.connect(); // GET
     if (clientConnection.getResponseCode() != 200)
       throw new DataSourceException(
