@@ -39,11 +39,12 @@ public class CensusHandler implements Route {
     List<List<String>> states =
         CensusAPIUtilities.deserializeCensus(new Buffer().readFrom(statesJson.getInputStream()));
     for (List<String> strings : states) {
-      if (strings.get(0).equals(state)) {
+      if (strings.get(0).equalsIgnoreCase(state)) {
         stateCode = strings.get(1);
       }
     }
     if (stateCode == null) {
+      //TODO: Add to response map
       System.err.println("Invalid state");
     }
     String county = request.queryParams("county");
@@ -94,65 +95,5 @@ public class CensusHandler implements Route {
       throw new DataSourceException(
           "unexpected: API connection not success status " + clientConnection.getResponseMessage());
     return clientConnection;
-  }
-
-  private HttpResponse<String> sendRequest(String stateCode, String countyCode)
-      throws URISyntaxException, IOException, InterruptedException {
-    HttpRequest buildCensusApiRequest =
-        HttpRequest.newBuilder()
-            .uri(
-                new URI(
-                    "https://api.census.gov/data/2021/acs/acs1/subject/variables?"
-                        + "get=NAME,S2802_C03_022E&for=county:"
-                        + countyCode
-                        + "&in=state:"
-                        + stateCode))
-            .GET()
-            .build();
-
-    // Send that API request then store the response in this variable. Note the generic type.
-    HttpResponse<String> sentCensusApiResponse =
-        HttpClient.newBuilder()
-            .build()
-            .send(buildCensusApiRequest, HttpResponse.BodyHandlers.ofString());
-
-    // What's the difference between these two lines? Why do we return the body? What is useful from
-    // the raw response (hint: how can we use the status of response)?
-    System.out.println(sentCensusApiResponse);
-    System.out.println(sentCensusApiResponse.body());
-
-    //    return sentCensusApiResponse.body();
-    return sentCensusApiResponse;
-  }
-
-  private String requestStateCode(String stateName)
-      throws URISyntaxException, IOException, InterruptedException {
-    HttpRequest buildCensusApiRequest =
-        HttpRequest.newBuilder()
-            .uri(new URI("https://api.census.gov/data/2010/dec/sf1?get=NAME&for=state:*"))
-            .GET()
-            .build();
-
-    // Send that API request then store the response in this variable. Note the generic type.
-    HttpResponse<String> sentCensusApiResponse =
-        HttpClient.newBuilder().build().send(buildCensusApiRequest, BodyHandlers.ofString());
-    System.out.println(sentCensusApiResponse);
-    String jsonString = sentCensusApiResponse.body();
-    return sentCensusApiResponse.body();
-  }
-
-  private String requestCountyCode(String countyName)
-      throws URISyntaxException, IOException, InterruptedException {
-    HttpRequest buildBoredApiRequest =
-        HttpRequest.newBuilder()
-            .uri(new URI("https://api.census.gov/data/2010/dec/sf1?get=NAME&for=county:*"))
-            .GET()
-            .build();
-    // Send that API request then store the response in this variable. Note the generic type.
-    HttpResponse<String> sentBoredApiResponse =
-        HttpClient.newBuilder()
-            .build()
-            .send(buildBoredApiRequest, HttpResponse.BodyHandlers.ofString());
-    return sentBoredApiResponse.body();
   }
 }
