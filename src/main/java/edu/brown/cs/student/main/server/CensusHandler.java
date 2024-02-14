@@ -4,6 +4,7 @@ import edu.brown.cs.student.main.census.CensusAPIUtilities;
 import edu.brown.cs.student.main.exceptions.DataSourceException;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -22,35 +23,27 @@ import spark.Route;
 
 public class CensusHandler implements Route {
 
-  private boolean called;
-  private Map<String, String> stateCodes;
-  private Map<String, String> countyCodes;
+  private final Map<String, String> stateCodes;
 
   public CensusHandler() {
-    this.called = false;
+    this.stateCodes = new HashMap<>();
   }
 
   @Override
   public Object handle(Request request, Response response) throws Exception {
+    Map<String, Object> responseMap = new HashMap<>();
+    if (!this.stateCodes.containsKey("california")) this.mapStateCodes();
     String state = request.queryParams("state");
-    String stateCode = null;
-    URL statesURL = new URL("https://api.census.gov/data/2010/dec/sf1?get=NAME&for=state:*");
-    HttpURLConnection statesJson = connect(statesURL);
-    List<List<String>> states =
-        CensusAPIUtilities.deserializeCensus(new Buffer().readFrom(statesJson.getInputStream()));
-    for (List<String> strings : states) {
-      if (strings.get(0).equalsIgnoreCase(state)) {
-        stateCode = strings.get(1);
-      }
-    }
+    String stateCode;
+    stateCode = this.stateCodes.get(state.toLowerCase());
     if (stateCode == null) {
       //TODO: Add to response map
+      responseMap.put("result", "Invalid state");
       System.err.println("Invalid state");
+      return responseMap;
     }
     String county = request.queryParams("county");
     String countyCode = "031"; // temp
-    this.called = true;
-    Map<String, Object> responseMap = new HashMap<>();
     try {
       // Sends a request to the API and receives JSON back
       URL url =
@@ -95,5 +88,14 @@ public class CensusHandler implements Route {
       throw new DataSourceException(
           "unexpected: API connection not success status " + clientConnection.getResponseMessage());
     return clientConnection;
+  }
+  private void mapStateCodes() throws IOException, DataSourceException {
+    URL statesURL = new URL("https://api.census.gov/data/2010/dec/sf1?get=NAME&for=state:*");
+    HttpURLConnection statesJson = connect(statesURL);
+    List<List<String>> states =
+        CensusAPIUtilities.deserializeCensus(new Buffer().readFrom(statesJson.getInputStream()));
+    for (List<String> strings : states) {
+      this.stateCodes.put(strings.get(0).toLowerCase(), strings.get(1));
+    }
   }
 }
