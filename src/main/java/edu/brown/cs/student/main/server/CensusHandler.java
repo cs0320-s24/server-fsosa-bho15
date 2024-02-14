@@ -137,11 +137,11 @@ public class CensusHandler implements Route {
             .uri(new URI("https://api.census.gov/data/2010/dec/sf1?get=NAME&for=county:*"))
             .GET()
             .build();
-      // Send that API request then store the response in this variable. Note the generic type.
-      HttpResponse<String> sentBoredApiResponse =
-          HttpClient.newBuilder()
-              .build()
-              .send(buildBoredApiRequest, HttpResponse.BodyHandlers.ofString());
-      return sentBoredApiResponse.body();
-    }
+    // Send that API request then store the response in this variable. Note the generic type.
+    HttpResponse<String> sentBoredApiResponse =
+        HttpClient.newBuilder()
+            .build()
+            .send(buildBoredApiRequest, HttpResponse.BodyHandlers.ofString());
+    return sentBoredApiResponse.body();
+  }
 }
