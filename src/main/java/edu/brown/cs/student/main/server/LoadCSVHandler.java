@@ -1,12 +1,16 @@
 package edu.brown.cs.student.main.server;
 
-import edu.brown.cs.student.main.exceptions.FactoryFailureException;
+import com.squareup.moshi.JsonAdapter;
+import com.squareup.moshi.Moshi;
+import com.squareup.moshi.Types;
 import edu.brown.cs.student.main.csvparser.creators.GeneralCreatorFromRow;
-import edu.brown.cs.student.main.csvparser.functionalclasses.Parser;
+import edu.brown.cs.student.main.csvparser.functional.Parser;
 import edu.brown.cs.student.main.exceptions.DataSourceException;
+import edu.brown.cs.student.main.exceptions.FactoryFailureException;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,17 +30,20 @@ public class LoadCSVHandler implements Route {
 
   @Override
   public Object handle(Request request, Response response) {
+    Moshi moshi = new Moshi.Builder().build();
+    Type mapStringObject = Types.newParameterizedType(Map.class, String.class, Object.class);
+    JsonAdapter<Map<String, Object>> adapter = moshi.adapter(mapStringObject);
     String filepath = request.queryParams("filepath");
     Map<String, Object> responseMap = new HashMap<>();
     try {
       this.load(filepath);
     } catch (DataSourceException e) {
       responseMap.put("result", "error_datasource");
-      return responseMap;
+      return adapter.toJson(responseMap);
     }
     responseMap.put("result", "success");
     responseMap.put("filepath", filepath);
-    return responseMap;
+    return adapter.toJson(responseMap);
   }
 
   private void load(String filepath) throws DataSourceException {
