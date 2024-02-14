@@ -32,7 +32,7 @@ public class CensusHandler implements Route {
     // String stateCode = requestStateCode(state);
     String county = request.queryParams("county");
     String countyCode = "031"; // temp
-    // int countyCode = requestCountyCode(county);
+    // String countyCode = requestCountyCode(county);
     this.called = true;
     Map<String, Object> responseMap = new HashMap<>();
     try {
@@ -97,6 +97,7 @@ public class CensusHandler implements Route {
     return sentCensusApiResponse.body();
   }
 
+<<<<<<< Updated upstream
   private String requestCountyCode(String countyName)
       throws URISyntaxException, IOException, InterruptedException {
     HttpRequest buildBoredApiRequest =
@@ -113,4 +114,13 @@ public class CensusHandler implements Route {
     String code = sentBoredApiResponse.body();
     return code;
   }
+=======
+      // Send that API request then store the response in this variable. Note the generic type.
+      HttpResponse<String> sentBoredApiResponse =
+          HttpClient.newBuilder()
+              .build()
+              .send(buildBoredApiRequest, HttpResponse.BodyHandlers.ofString());
+      return sentBoredApiResponse.body();
+    }
+>>>>>>> Stashed changes
 }
