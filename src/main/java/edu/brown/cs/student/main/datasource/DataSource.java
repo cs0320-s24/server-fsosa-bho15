@@ -7,13 +7,28 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import okio.Buffer;
 
 public class DataSource {
-  public static void accessAPI(Map<String, Object> responseMap, String stateCode, String countyCode, String state, String county){
+  public static Map<String, String> stateCodes;
+  public DataSource() {
+    stateCodes = new HashMap<>();
+  }
+  public static Map<String, Object> accessAPI(String state, String county){
+    Map<String, Object> responseMap = new HashMap<>();
+    String stateCode;
+    stateCode = stateCodes.get(state.toLowerCase());
+    String countyCode = "031"; //temp
+    if (stateCode == null) {
+      Map<String, Object> errorResponseMap = new HashMap<>();
+      responseMap.put("result", "Invalid state");
+      System.err.println("Invalid state");
+      return errorResponseMap;
+    }
     try {
-      // Sends a request to the API and receives JSON back
       URL url =
           new URL(
               "https://api.census.gov/data/2021/acs/acs1/subject/variables?"
@@ -39,6 +54,7 @@ public class DataSource {
       // falls short.
       responseMap.put("result", "Exception");
     }
+    return responseMap;
   }
   public static HttpURLConnection connect(URL requestURL) throws DataSourceException, IOException {
     URLConnection urlConnection = requestURL.openConnection();
