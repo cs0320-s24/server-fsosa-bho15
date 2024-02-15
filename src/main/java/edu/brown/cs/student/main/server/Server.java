@@ -16,7 +16,6 @@ public class Server {
           response.header("Access-Control-Allow-Methods", "*");
         });
 
-    // Setting up the handler for the GET csv and census endpoints
     LoadCSVHandler loadHandler = new LoadCSVHandler();
     CachingCensusDataSource dataSource = new CachingCensusDataSource(true, 10, 1);
 
@@ -28,7 +27,6 @@ public class Server {
     Spark.init();
     Spark.awaitInitialization();
 
-    // Notice this link alone leads to a 404... Why is that?
     System.out.println("Server started at http://localhost:" + port);
   }
 }

@@ -73,7 +73,6 @@ public class Search<T> {
    * @return a list of matches
    * @throws IOException for issues during parse
    * @throws FactoryFailureException for issues during conversion of row to object
-   * @throws MissingAttributeException if the attribute is not present in the file
    */
   public List<T> search(int attributeIndex, String value)
       throws IOException, FactoryFailureException, IndexOutOfBoundsException {

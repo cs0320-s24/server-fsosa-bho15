@@ -5,6 +5,7 @@ import com.squareup.moshi.Moshi;
 import com.squareup.moshi.Types;
 import edu.brown.cs.student.main.csvparser.creators.GeneralCreatorFromRow;
 import edu.brown.cs.student.main.csvparser.functional.Parser;
+import edu.brown.cs.student.main.exceptions.APIException;
 import edu.brown.cs.student.main.exceptions.DataSourceException;
 import edu.brown.cs.student.main.exceptions.FactoryFailureException;
 import java.io.BufferedReader;
@@ -37,8 +38,9 @@ public class LoadCSVHandler implements Route {
     Map<String, Object> responseMap = new HashMap<>();
     try {
       this.load(filepath);
-    } catch (DataSourceException e) {
-      responseMap.put("result", "error_datasource");
+    } catch (APIException e) {
+      responseMap.put("result", e.getErrorCode());
+      responseMap.put("message", e.getMessage());
       return adapter.toJson(responseMap);
     }
     responseMap.put("result", "success");

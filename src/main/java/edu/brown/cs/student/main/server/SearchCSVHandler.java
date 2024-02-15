@@ -56,9 +56,29 @@ public class SearchCSVHandler implements Route {
           "message", "Both column name and number were given. Please only include one.");
       return adapter.toJson(responseMap);
     } else if (columnName != null) {
-      return getObject(adapter, columnName, attribute, responseMap);
+      try {
+        results = this.search.search(columnName, attribute);
+        responseMap.put("result", "success");
+        responseMap.put("data", results);
+        responseMap.put("column_searched", columnName);
+        return adapter.toJson(responseMap);
+      } catch (Exception e) {
+        responseMap.put("result", "error_bad_request");
+        responseMap.put("message", e.getMessage());
+        return adapter.toJson(responseMap);
+      }
     } else if (columnIndex != null) {
-      return getObject(adapter, columnIndex, attribute, responseMap);
+      try {
+        results = this.search.search(Integer.parseInt(columnIndex), attribute);
+        responseMap.put("result", "success");
+        responseMap.put("data", results);
+        responseMap.put("column_searched", columnIndex);
+        return adapter.toJson(responseMap);
+      } catch (Exception e) {
+        responseMap.put("result", "error_bad_request");
+        responseMap.put("message", e.getMessage());
+        return adapter.toJson(responseMap);
+      }
     }
     try {
       results = this.search.search(attribute);
@@ -70,25 +90,5 @@ public class SearchCSVHandler implements Route {
     responseMap.put("result", "success");
     responseMap.put("data", results);
     return adapter.toJson(responseMap);
-  }
-
-  @NotNull
-  private Object getObject(
-      JsonAdapter<Map<String, Object>> adapter,
-      String column,
-      String attribute,
-      Map<String, Object> responseMap) {
-    List<List<String>> results;
-    try {
-      results = this.search.search(column, attribute);
-      responseMap.put("result", "success");
-      responseMap.put("data", results);
-      responseMap.put("column_searched", column);
-      return adapter.toJson(responseMap);
-    } catch (Exception e) {
-      responseMap.put("result", "error_bad_request");
-      responseMap.put("message", e.getMessage());
-      return adapter.toJson(responseMap);
-    }
   }
 }

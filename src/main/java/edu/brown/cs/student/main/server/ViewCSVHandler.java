@@ -3,6 +3,8 @@ package edu.brown.cs.student.main.server;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 import com.squareup.moshi.Types;
+import edu.brown.cs.student.main.exceptions.APIException;
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
@@ -34,9 +36,13 @@ public class ViewCSVHandler implements Route {
     List<List<String>> csv;
     try {
       csv = this.loadHandler.getCSV();
-    } catch (Exception e) {
-      responseMap.put("result", "error_datasource");
-      responseMap.put("message", "Parser was not able to parse data loaded.");
+    } catch (IOException e) {
+      responseMap.put("result", "error_io_exception");
+      responseMap.put("message", e.getMessage());
+      return adapter.toJson(responseMap);
+    } catch (APIException e) {
+      responseMap.put("result", e.getErrorCode());
+      responseMap.put("message", e.getMessage());
       return adapter.toJson(responseMap);
     }
     responseMap.put("result", "success");
