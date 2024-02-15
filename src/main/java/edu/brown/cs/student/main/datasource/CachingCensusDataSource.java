@@ -5,6 +5,7 @@
  import com.google.common.cache.LoadingCache;
  import edu.brown.cs.student.main.exceptions.BadRequestException;
  import edu.brown.cs.student.main.exceptions.DataSourceException;
+ import java.io.IOException;
  import java.util.Arrays;
  import java.util.Date;
  import java.util.HashMap;
@@ -27,8 +28,7 @@
               @NotNull
               @Override
               public List<List<String>> load(@NotNull List<String> strings)
-                  throws DataSourceException, BadRequestException {
-                System.out.println("called load for: " + strings);
+                  throws DataSourceException, BadRequestException, IOException {
                 return DataSource.accessAPI(strings.get(0), strings.get(1));
               }
             });

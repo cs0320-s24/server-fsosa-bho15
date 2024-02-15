@@ -7,27 +7,34 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import okio.Buffer;
 
 public class DataSource {
-  public static Map<String, String> stateCodes = new HashMap<>();
+  public static Map<String, String> stateCodes = null;
 
   public DataSource() {
     stateCodes = new HashMap<>();
   }
 
-  public static Map<String, String> getStateCodes() {
-    return stateCodes;
+  public static String getStateCode(String state) throws DataSourceException, IOException {
+    if (stateCodes == null) {
+      URL statesURL = new URL("https://api.census.gov/data/2010/dec/sf1?get=NAME&for=state:*");
+      HttpURLConnection statesJson = DataSource.connect(statesURL);
+      List<List<String>> states =
+          CensusAPIUtilities.deserializeCensus(new Buffer().readFrom(statesJson.getInputStream()));
+      for (List<String> strings : states) {
+        stateCodes.put(strings.get(0).toLowerCase(), strings.get(1));
+      }
+    }
+    return stateCodes.get(state.toLowerCase());
   }
 
   public static List<List<String>> accessAPI(String state, String county)
-      throws BadRequestException, DataSourceException {
-    String stateCode;
-    stateCode = stateCodes.get(state.toLowerCase());
+      throws BadRequestException, DataSourceException, IOException {
+    String stateCode = getStateCode(state);
     String countyCode = "031"; // temp
     if (stateCode == null) {
       throw new BadRequestException("State does not exist.");
