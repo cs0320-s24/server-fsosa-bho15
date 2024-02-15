@@ -10,7 +10,6 @@ public class Server {
     int port = 3241;
     Spark.port(port);
 
-    // TODO: think about how to change this for security
     after(
         (request, response) -> {
           response.header("Access-Control-Allow-Origin", "*");
@@ -25,6 +24,7 @@ public class Server {
     Spark.get("view", new ViewCSVHandler(loadHandler));
     Spark.get("search", new SearchCSVHandler(loadHandler));
     Spark.get("broadband", new CensusHandler(dataSource));
+
     Spark.init();
     Spark.awaitInitialization();
 

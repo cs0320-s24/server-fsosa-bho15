@@ -63,6 +63,7 @@ public class Parser<T> {
     String row = bufferedReader.readLine();
     while (row != null) {
       List<String> attributes = Arrays.asList(regexSplitCSVRow.split(row));
+      attributes.replaceAll(Parser::removeQuotes);
       if (this.header != null && attributes.size() != this.header.size()) {
         throw new FactoryFailureException("Row size did not match header size.", attributes);
       }
@@ -71,5 +72,13 @@ public class Parser<T> {
       row = bufferedReader.readLine();
     }
     return points;
+  }
+
+  private static String removeQuotes(String field) {
+    // Remove leading and trailing quotes if they exist
+    if (field.startsWith("\"") && field.endsWith("\"")) {
+      return field.substring(1, field.length() - 1);
+    }
+    return field;
   }
 }
