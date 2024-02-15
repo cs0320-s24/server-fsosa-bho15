@@ -2,6 +2,7 @@ package edu.brown.cs.student.main.exceptions;
 
 public abstract class APIException extends Exception {
   private final Throwable cause;
+
   public APIException(String message) {
     super(message);
     this.cause = null;

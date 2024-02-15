@@ -10,7 +10,6 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.jetbrains.annotations.NotNull;
 import spark.Request;
 import spark.Response;
 import spark.Route;
@@ -43,7 +42,9 @@ public class SearchCSVHandler implements Route {
       responseMap.put("message", "Load was not called before search");
       return adapter.toJson(responseMap);
     }
-    this.search = new Search<>(parser, new GeneralCreatorFromRow());
+    if (this.search == null) {
+      this.search = new Search<>(parser, new GeneralCreatorFromRow());
+    }
     List<List<String>> results;
 
     if (attribute == null) {
