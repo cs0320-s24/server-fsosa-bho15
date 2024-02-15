@@ -8,20 +8,25 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import okio.Buffer;
 
 public class DataSource {
-  public static Map<String, String> stateCodes;
+  public static Map<String, String> stateCodes = new HashMap<>();
+
   public DataSource() {
     stateCodes = new HashMap<>();
   }
-  public static Map<String, Object> accessAPI(String state, String county){
+
+  public static Map<String, String> getStateCodes() {
+    return stateCodes;
+  }
+
+  public static Map<String, Object> accessAPI(String state, String county) {
     Map<String, Object> responseMap = new HashMap<>();
     String stateCode;
     stateCode = stateCodes.get(state.toLowerCase());
-    String countyCode = "031"; //temp
+    String countyCode = "031"; // temp
     if (stateCode == null) {
       Map<String, Object> errorResponseMap = new HashMap<>();
       responseMap.put("result", "Invalid state");
@@ -56,6 +61,7 @@ public class DataSource {
     }
     return responseMap;
   }
+
   public static HttpURLConnection connect(URL requestURL) throws DataSourceException, IOException {
     URLConnection urlConnection = requestURL.openConnection();
     if (!(urlConnection instanceof HttpURLConnection clientConnection))
