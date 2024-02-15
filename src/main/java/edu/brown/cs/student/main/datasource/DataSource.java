@@ -13,14 +13,12 @@ import java.util.Map;
 import okio.Buffer;
 
 public class DataSource {
-  public static Map<String, String> stateCodes = null;
+  public static Map<String, String> stateCodes = new HashMap<>();
 
-  public DataSource() {
-    stateCodes = new HashMap<>();
-  }
+  public DataSource() {}
 
   public static String getStateCode(String state) throws DataSourceException, IOException {
-    if (stateCodes == null) {
+    if (stateCodes.isEmpty()) {
       URL statesURL = new URL("https://api.census.gov/data/2010/dec/sf1?get=NAME&for=state:*");
       HttpURLConnection statesJson = DataSource.connect(statesURL);
       List<List<String>> states =
@@ -50,8 +48,8 @@ public class DataSource {
                   + stateCode);
       HttpURLConnection censusJson = connect(url);
       // Adds results to the responseMap
-      results = CensusAPIUtilities.deserializeCensus(
-          new Buffer().readFrom(censusJson.getInputStream()));
+      results =
+          CensusAPIUtilities.deserializeCensus(new Buffer().readFrom(censusJson.getInputStream()));
     } catch (Exception e) {
       throw new DataSourceException("There was an issue accessing the datasource.");
     }
