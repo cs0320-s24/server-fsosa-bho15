@@ -30,14 +30,33 @@ public class DataSource {
     return stateCodes.get(state.toLowerCase());
   }
 
+  public static String getCountyCode(String county, String stateCode)
+      throws DataSourceException, IOException {
+    URL countyURL = new URL("https://api.census.gov/data/2010/dec/sf1?get=NAME&for=county:*");
+    HttpURLConnection countyJson = DataSource.connect(countyURL);
+    List<List<String>> counties =
+        CensusAPIUtilities.deserializeCensus(new Buffer().readFrom(countyJson.getInputStream()));
+    for (List<String> strings : counties) {
+      String countyName = strings.get(0).split(",")[0];
+      if (strings.get(1).equals(stateCode) && countyName.equals(county)) {
+        return strings.get(2);
+      }
+    }
+    System.err.println("Invalid county");
+    return null;
+  }
+
   public static List<List<String>> accessAPI(String state, String county)
       throws BadRequestException, DataSourceException, IOException {
-    String stateCode = getStateCode(state);
-    String countyCode = "031"; // temp
-    if (stateCode == null) {
-      throw new BadRequestException("State does not exist.");
+    if (state == null) {
+      throw new BadRequestException("Please enter a valid state.");
     }
-    List<List<String>> results = null;
+    if (county == null) {
+      throw new BadRequestException("Please enter a valid county.");
+    }
+    String stateCode = getStateCode(state);
+    String countyCode = getCountyCode(county, stateCode);
+    List<List<String>> results;
     try {
       URL url =
           new URL(
@@ -47,11 +66,10 @@ public class DataSource {
                   + "&in=state:"
                   + stateCode);
       HttpURLConnection censusJson = connect(url);
-      // Adds results to the responseMap
       results =
           CensusAPIUtilities.deserializeCensus(new Buffer().readFrom(censusJson.getInputStream()));
     } catch (Exception e) {
-      throw new DataSourceException("There was an issue accessing the datasource.");
+      throw new DataSourceException("Broadband percentage information unavailable.");
     }
     return results;
   }
