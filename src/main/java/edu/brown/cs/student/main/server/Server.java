@@ -2,6 +2,7 @@ package edu.brown.cs.student.main.server;
 
 import static spark.Spark.after;
 
+import edu.brown.cs.student.main.datasource.CachingCensusDataSource;
 import spark.Spark;
 
 public class Server {
@@ -16,20 +17,14 @@ public class Server {
           response.header("Access-Control-Allow-Methods", "*");
         });
 
-<<<<<<< Updated upstream
     // Setting up the handler for the GET csv and census endpoints
     LoadCSVHandler loadHandler = new LoadCSVHandler();
+    CachingCensusDataSource dataSource = new CachingCensusDataSource();
 
     Spark.get("load", loadHandler);
     Spark.get("view", new ViewCSVHandler(loadHandler));
     Spark.get("search", new SearchCSVHandler(loadHandler));
-    Spark.get("broadband", new CensusHandler());
-=======
-    // Setting up the handler for the GET /order and /activity endpoints
-    Spark.get("load", new LoadCSVHandler());
-    Spark.get("load", new ViewCSVHandler());
-    Spark.get("census", new CensusHandler());
->>>>>>> Stashed changes
+    Spark.get("broadband", new CensusHandler(dataSource));
     Spark.init();
     Spark.awaitInitialization();
 
