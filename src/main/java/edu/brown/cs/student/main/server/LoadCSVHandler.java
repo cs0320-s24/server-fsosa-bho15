@@ -35,11 +35,24 @@ public class LoadCSVHandler implements Route {
     JsonAdapter<Map<String, Object>> adapter = moshi.adapter(mapStringObject);
     String filepath = request.queryParams("filepath");
     Map<String, Object> responseMap = new HashMap<>();
+<<<<<<< Updated upstream
     try {
       this.load(filepath);
     } catch (DataSourceException e) {
       responseMap.put("result", "error_datasource");
       return adapter.toJson(responseMap);
+=======
+    File tmpDir = new File("data/" + filepath);
+    boolean exists = tmpDir.exists();
+    if (!exists) {
+      // TODO: add more descriptive errors
+      responseMap.put("result", "Exception");
+    } else {
+      //  TODO: do we even need this object?
+      LoadCSV loadcsv = new LoadCSV(filepath);
+      responseMap.put("result", "success");
+      responseMap.put("filepath", filepath);
+>>>>>>> Stashed changes
     }
     responseMap.put("result", "success");
     responseMap.put("filepath", filepath);
