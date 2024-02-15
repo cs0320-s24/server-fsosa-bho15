@@ -18,21 +18,25 @@ public class CachingCensusDataSource implements CensusDataSource {
 
   private final LoadingCache<List<String>, List<List<String>>> cache;
 
-  public CachingCensusDataSource() {
-    this.cache =
-        CacheBuilder.newBuilder()
-            .maximumSize(10)
-            .expireAfterWrite(1, TimeUnit.MINUTES)
-            .recordStats()
-            .build(
-                new CacheLoader<>() {
-                  @NotNull
-                  @Override
-                  public List<List<String>> load(@NotNull List<String> strings)
-                      throws DataSourceException, BadRequestException, IOException {
-                    return DataSource.accessAPI(strings.get(0), strings.get(1));
-                  }
-                });
+  public CachingCensusDataSource(boolean useCache, int maxSize, int minutesBeforeRemoval) {
+    if (useCache) {
+      maxSize = 0;
+      minutesBeforeRemoval = 0;
+    }
+      this.cache =
+          CacheBuilder.newBuilder()
+              .maximumSize(maxSize)
+              .expireAfterWrite(minutesBeforeRemoval, TimeUnit.MINUTES)
+              .recordStats()
+              .build(
+                  new CacheLoader<>() {
+                    @NotNull
+                    @Override
+                    public List<List<String>> load(@NotNull List<String> strings)
+                        throws DataSourceException, BadRequestException, IOException {
+                      return DataSource.accessAPI(strings.get(0), strings.get(1));
+                    }
+                  });
   }
 
   @Override
