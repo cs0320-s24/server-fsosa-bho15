@@ -37,7 +37,11 @@
            The adapters README.md includes a "latest.version" version; replaced with
            latest version as of August 2022.
        -->
-
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>31.1-jre</version>
+    </dependency>
     <dependency>
       <groupId>com.squareup.moshi</groupId>
       <artifactId>moshi</artifactId>

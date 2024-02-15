@@ -1,6 +1,7 @@
 package edu.brown.cs.student.main.datasource;
 
 import edu.brown.cs.student.main.census.CensusAPIUtilities;
+import edu.brown.cs.student.main.exceptions.BadRequestException;
 import edu.brown.cs.student.main.exceptions.DataSourceException;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -8,6 +9,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import okio.Buffer;
 
@@ -22,17 +24,15 @@ public class DataSource {
     return stateCodes;
   }
 
-  public static Map<String, Object> accessAPI(String state, String county) {
-    Map<String, Object> responseMap = new HashMap<>();
+  public static List<List<String>> accessAPI(String state, String county)
+      throws BadRequestException, DataSourceException {
     String stateCode;
     stateCode = stateCodes.get(state.toLowerCase());
     String countyCode = "031"; // temp
     if (stateCode == null) {
-      Map<String, Object> errorResponseMap = new HashMap<>();
-      responseMap.put("result", "Invalid state");
-      System.err.println("Invalid state");
-      return errorResponseMap;
+      throw new BadRequestException("State does not exist.");
     }
+    List<List<String>> results = null;
     try {
       URL url =
           new URL(
@@ -43,23 +43,12 @@ public class DataSource {
                   + stateCode);
       HttpURLConnection censusJson = connect(url);
       // Adds results to the responseMap
-      responseMap.put("result", "success");
-      responseMap.put("time", new Date());
-      responseMap.put("state", state);
-      responseMap.put("county", county);
-      responseMap.put(
-          "percentage",
-          CensusAPIUtilities.deserializeCensus(new Buffer().readFrom(censusJson.getInputStream()))
-              .get(1)
-              .get(1));
+      results = CensusAPIUtilities.deserializeCensus(
+          new Buffer().readFrom(censusJson.getInputStream()));
     } catch (Exception e) {
-      e.printStackTrace();
-      // This is a relatively unhelpful exception message. An important part of this sprint will be
-      // in learning to debug correctly by creating your own informative error messages where Spark
-      // falls short.
-      responseMap.put("result", "Exception");
+      throw new DataSourceException("There was an issue accessing the datasource.");
     }
-    return responseMap;
+    return results;
   }
 
   public static HttpURLConnection connect(URL requestURL) throws DataSourceException, IOException {
