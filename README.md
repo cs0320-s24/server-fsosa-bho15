@@ -1,13 +1,27 @@
-> **GETTING STARTED:** You must start from some combination of the CSV Sprint code that you and your partner ended up with. Please move your code directly into this repository so that the `pom.xml`, `/src` folder, etc, are all at this base directory.
-
-> **IMPORTANT NOTE**: In order to run the server, run `mvn package` in your terminal then `./run` (using Git Bash for Windows users). This will be the same as the first Sprint. Take notice when transferring this run sprint to your Sprint 2 implementation that the path of your Server class matches the path specified in the run script. Currently, it is set to execute Server at `edu/brown/cs/student/main/server/Server`. Running through terminal will save a lot of computer resources (IntelliJ is pretty intensive!) in future sprints.
-
 # Project Details
+Project Name: Sprint 2 - Server
+
+Team members: fsosa and bho15
+
+Github repo: https://github.com/cs0320-s24/server-fsosa-bho15
 
 # Design Choices
+We elected to create 5 different packages that each deal with different parts of the server. The server package contains the server class, and the handlers for the endpoints which interact with each other. One major design choice we made in these classes was to pass in a LoadCSVHandler object to the view and search handlers so that they would know if the csv was correctly loaded or not. 
+
+Another one of the packages was an exceptions package, which included specific exceptions that we wanted to throw based on the type of error that was occurring. We also had a data source package, which managed the cache, and both the mock and real census data, as well as the proxy interface. Lastly, we have a csvparser package to deal with parsing and searching the csv's once they are loaded, and a census package to do things like deserialize the census data. 
 
 # Errors/Bugs
-
+N/A
 # Tests
+We had 3 test classes, one for integration testing with the census API, one for unit testing the csv endpoints, and one for testing the cache. 
+
+The integration test class ensures our census API calls work correctly by making calls with different parameters and edge cases and ensuring we get the expected response. 
+
+The unit test class makes sure the functionality for loading, viewing, and searching csvs works as intended. It also tests to make sure the mocking works as intended. 
+
+The cache test class checks that the cache is operating on the census data properly. It has different tests that make sure data is being cached, unloaded, and that the program still works with no cache. 
 
 # How to
+mvn package to compile and run tests
+
+./run to start up server on localhost:3241

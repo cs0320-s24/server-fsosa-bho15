@@ -9,7 +9,9 @@ import edu.brown.cs.student.main.csvparser.creators.GeneralCreatorFromRow;
 import edu.brown.cs.student.main.csvparser.functional.Parser;
 import edu.brown.cs.student.main.csvparser.functional.Search;
 import edu.brown.cs.student.main.datasource.CachingACSDataSource;
+import edu.brown.cs.student.main.datasource.MockACSDataSource;
 import edu.brown.cs.student.main.exceptions.FactoryFailureException;
+import edu.brown.cs.student.main.exceptions.MissingAttributeException;
 import edu.brown.cs.student.main.server.CensusHandler;
 import edu.brown.cs.student.main.server.LoadCSVHandler;
 import edu.brown.cs.student.main.server.SearchCSVHandler;
@@ -89,7 +91,7 @@ public class UnitTest {
   }
 
   @Test
-  public void testSearchCSV() throws IOException, FactoryFailureException {
+  public void testSearchCSVNoColumn() throws IOException, FactoryFailureException {
     Moshi moshi = new Moshi.Builder().build();
     Type mapStringObject = Types.newParameterizedType(Map.class, String.class, Object.class);
     JsonAdapter<Map<String, Object>> adapter = moshi.adapter(mapStringObject);
@@ -103,5 +105,47 @@ public class UnitTest {
     assertEquals(
         "{\"result\":\"success\",\"data\":[[\"Cranston\",\"77,145.00\",\"95,763.00\",\"38,269.00\"]]}",
         adapter.toJson(responseMap));
+  }
+
+  @Test
+  public void testSearchCSVColumnName() throws IOException, FactoryFailureException {
+    Moshi moshi = new Moshi.Builder().build();
+    Type mapStringObject = Types.newParameterizedType(Map.class, String.class, Object.class);
+    JsonAdapter<Map<String, Object>> adapter = moshi.adapter(mapStringObject);
+    Map<String, Object> responseMap = new HashMap<>();
+    Parser<List<String>> parser = new Parser<>(new FileReader("data/ri.csv"), true);
+    Search search = new Search(parser, new GeneralCreatorFromRow());
+    List<List<String>> results =
+        search.search(0, "Cranston", parser.parse(new GeneralCreatorFromRow()));
+    responseMap.put("result", "success");
+    responseMap.put("data", results);
+    assertEquals(
+        "{\"result\":\"success\",\"data\":[[\"Cranston\",\"77,145.00\",\"95,763.00\",\"38,269.00\"]]}",
+        adapter.toJson(responseMap));
+  }
+
+  @Test
+  public void testSearchCSVColumnIndex()
+      throws IOException, FactoryFailureException, MissingAttributeException {
+    Moshi moshi = new Moshi.Builder().build();
+    Type mapStringObject = Types.newParameterizedType(Map.class, String.class, Object.class);
+    JsonAdapter<Map<String, Object>> adapter = moshi.adapter(mapStringObject);
+    Map<String, Object> responseMap = new HashMap<>();
+    Parser<List<String>> parser = new Parser<>(new FileReader("data/ri.csv"), true);
+    Search search = new Search(parser, new GeneralCreatorFromRow());
+    List<List<String>> results =
+        search.search("City/Town", "Cranston", parser.parse(new GeneralCreatorFromRow()));
+    responseMap.put("result", "success");
+    responseMap.put("data", results);
+    assertEquals(
+        "{\"result\":\"success\",\"data\":[[\"Cranston\",\"77,145.00\",\"95,763.00\",\"38,269.00\"]]}",
+        adapter.toJson(responseMap));
+  }
+
+  @Test
+  public void testMock() {
+    List<List<String>> mockResult = MockACSDataSource.accessAPI("Rhode Island", "Providence County");
+    System.out.println(mockResult);
+    assertEquals("17", mockResult.get(1).get(1));
   }
 }
