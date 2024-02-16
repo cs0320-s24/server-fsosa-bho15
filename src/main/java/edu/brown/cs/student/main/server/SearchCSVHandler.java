@@ -66,7 +66,7 @@ public class SearchCSVHandler implements Route {
       return adapter.toJson(responseMap);
     } else if (columnName != null) {
       try {
-        results = this.search.search(columnName, attribute);
+        results = this.search.search(columnName, attribute, this.loadHandler.getCSV());
         responseMap.put("result", "success");
         responseMap.put("data", results);
         responseMap.put("column_searched", columnName);
@@ -78,7 +78,8 @@ public class SearchCSVHandler implements Route {
       }
     } else if (columnIndex != null) {
       try {
-        results = this.search.search(Integer.parseInt(columnIndex), attribute);
+        results =
+            this.search.search(Integer.parseInt(columnIndex), attribute, this.loadHandler.getCSV());
         responseMap.put("result", "success");
         responseMap.put("data", results);
         responseMap.put("column_searched", columnIndex);
@@ -90,7 +91,7 @@ public class SearchCSVHandler implements Route {
       }
     }
     try {
-      results = this.search.search(attribute);
+      results = this.search.search(attribute, this.loadHandler.getCSV());
     } catch (Exception e) {
       responseMap.put("result", "error_bad_request");
       responseMap.put("message", e.getMessage());

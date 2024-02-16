@@ -53,7 +53,10 @@ public class ACSDataSource {
    */
   private static String getCountyCode(String county, String stateCode)
       throws DataSourceException, IOException, BadRequestException {
-    URL countyURL = new URL("https://api.census.gov/data/2010/dec/sf1?get=NAME&for=county:*");
+    if (stateCode == null) throw new BadRequestException("Invalid state.");
+    URL countyURL =
+        new URL(
+            "https://api.census.gov/data/2010/dec/sf1?get=NAME&for=county:*&in=state:" + stateCode);
     HttpURLConnection countyJson = ACSDataSource.connect(countyURL);
     try (Buffer reader = new Buffer().readFrom(countyJson.getInputStream())) {
       List<List<String>> counties = CensusAPIUtilities.deserializeCensus(reader);

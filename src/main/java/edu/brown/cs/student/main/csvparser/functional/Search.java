@@ -1,9 +1,7 @@
 package edu.brown.cs.student.main.csvparser.functional;
 
 import edu.brown.cs.student.main.csvparser.creators.CreatorFromRow;
-import edu.brown.cs.student.main.exceptions.FactoryFailureException;
 import edu.brown.cs.student.main.exceptions.MissingAttributeException;
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -14,9 +12,7 @@ public class Search<T> {
 
   private final Parser<T> parser;
   private final CreatorFromRow<T> creatorFromRow;
-  private boolean isParsed;
   private List<String> header;
-  private List<T> points;
 
   /**
    * Search constructor takes in a parser and a creatorFromRow
@@ -27,9 +23,7 @@ public class Search<T> {
   public Search(Parser<T> parser, CreatorFromRow<T> creatorFromRow) {
     this.parser = parser;
     this.creatorFromRow = creatorFromRow;
-    this.isParsed = false;
     this.header = null;
-    this.points = null;
   }
 
   /**
@@ -39,18 +33,11 @@ public class Search<T> {
    * @param attribute String that defines the attribute from the header being searched for
    * @param value value of the attribute being searched for
    * @return a list of matches
-   * @throws IOException for issues during parse
-   * @throws FactoryFailureException for issues during conversion of row to object
    * @throws MissingAttributeException if the attribute is not present in the file
    */
-  public List<T> search(String attribute, String value)
-      throws IOException, FactoryFailureException, MissingAttributeException {
-    // parse only if we have not parsed before
-    if (!this.isParsed) {
-      this.header = this.parser.getHeader();
-      this.points = this.parser.parse(this.creatorFromRow);
-      this.isParsed = true;
-    }
+  public List<T> search(String attribute, String value, List<T> csv)
+      throws MissingAttributeException {
+    this.header = this.parser.getHeader();
     // get the index from the attribute
     int attributeIndex = -1;
     for (int i = 0; i < header.size(); i++) {
@@ -61,7 +48,7 @@ public class Search<T> {
     if (attributeIndex == -1) {
       throw new MissingAttributeException("Attribute not found", attribute);
     }
-    return this.creatorFromRow.containsAttribute(this.points, attributeIndex, value);
+    return this.creatorFromRow.containsAttribute(csv, attributeIndex, value);
   }
 
   /**
@@ -71,22 +58,14 @@ public class Search<T> {
    * @param attributeIndex int that defines the attribute from the header being searched for
    * @param value value of the attribute being searched for
    * @return a list of matches
-   * @throws IOException for issues during parse
-   * @throws FactoryFailureException for issues during conversion of row to object
    */
-  public List<T> search(int attributeIndex, String value)
-      throws IOException, FactoryFailureException, IndexOutOfBoundsException {
-    // parse only if we have not parsed before
-    if (!this.isParsed) {
-      this.header = this.parser.getHeader();
-      this.points = this.parser.parse(this.creatorFromRow);
-      this.isParsed = true;
-    }
-    // check that the index is within range
+  public List<T> search(int attributeIndex, String value, List<T> csv)
+      throws IndexOutOfBoundsException {
+    this.header = this.parser.getHeader();
     if (attributeIndex < 0 || attributeIndex >= this.header.size()) {
       throw new IndexOutOfBoundsException(attributeIndex);
     }
-    return this.creatorFromRow.containsAttribute(this.points, attributeIndex, value);
+    return this.creatorFromRow.containsAttribute(csv, attributeIndex, value);
   }
 
   /**
@@ -94,16 +73,9 @@ public class Search<T> {
    *
    * @param value value being searched for
    * @return list of matches
-   * @throws IOException for issues during parse
-   * @throws FactoryFailureException for issues during row conversion
    */
-  public List<T> search(String value) throws IOException, FactoryFailureException {
-    // parse only if we have not parsed before
-    if (!this.isParsed) {
-      this.header = this.parser.getHeader();
-      this.points = this.parser.parse(this.creatorFromRow);
-      this.isParsed = true;
-    }
-    return this.creatorFromRow.contains(this.points, value);
+  public List<T> search(String value, List<T> csv) {
+    this.header = this.parser.getHeader();
+    return this.creatorFromRow.contains(csv, value);
   }
 }

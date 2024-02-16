@@ -23,6 +23,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import spark.Spark;
 
+/** test class for checking access to the census api */
 public class IntegrationTest {
 
   @BeforeClass
@@ -60,7 +61,7 @@ public class IntegrationTest {
         new URL(
             "http://localhost:"
                 + Spark.port()
-                + "/broadband?county=Scott%20County&state=Minnesota");
+                + "/broadband?county=Providence%20County&state=Rhode%20Island");
     HttpURLConnection clientConnection = ACSDataSource.connect(url);
     assertEquals(200, clientConnection.getResponseCode());
     clientConnection.disconnect();
@@ -68,8 +69,8 @@ public class IntegrationTest {
 
   @Test
   public void testCorrectAPIRequest() throws IOException, DataSourceException, BadRequestException {
-    List<List<String>> results = ACSDataSource.accessAPI("Minnesota", "Scott County");
-    assertEquals(91.9, Double.parseDouble(results.get(1).get(1)));
+    List<List<String>> results = ACSDataSource.accessAPI("Rhode Island", "Providence County");
+    assertEquals(85.4, Double.parseDouble(results.get(1).get(1)));
   }
 
   @Test
@@ -86,7 +87,7 @@ public class IntegrationTest {
     assertThrows(
         BadRequestException.class,
         () -> {
-          ACSDataSource.accessAPI(null, "Scott County");
+          ACSDataSource.accessAPI(null, "Providence County");
         });
   }
 
@@ -95,7 +96,7 @@ public class IntegrationTest {
     assertThrows(
         BadRequestException.class,
         () -> {
-          ACSDataSource.accessAPI("Minnesota", null);
+          ACSDataSource.accessAPI("Rhode Island", null);
         });
   }
 

@@ -103,6 +103,11 @@ public class CachingACSDataSource implements ACSProxyInterface {
     return responseMap;
   }
 
+  /**
+   * getter method for the cache
+   *
+   * @return cache
+   */
   public LoadingCache<List<String>, List<List<String>>> getCache() {
     return this.cache;
   }

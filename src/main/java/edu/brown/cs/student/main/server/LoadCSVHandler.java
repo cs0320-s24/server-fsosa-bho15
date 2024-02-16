@@ -67,7 +67,8 @@ public class LoadCSVHandler implements Route {
       FileReader fileReader = new FileReader("data/" + filepath);
       BufferedReader bufferedReader = new BufferedReader(fileReader);
       this.parser = new Parser<>(bufferedReader, true);
-    } catch (IOException e) {
+      this.csv = this.parser.parse(new GeneralCreatorFromRow());
+    } catch (IOException | FactoryFailureException e) {
       throw new DataSourceException(e.getMessage(), e);
     }
   }
