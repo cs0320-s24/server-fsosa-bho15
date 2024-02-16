@@ -1,6 +1,6 @@
 package edu.brown.cs.student.main.server;
 
-import edu.brown.cs.student.main.datasource.CachingCensusDataSource;
+import edu.brown.cs.student.main.datasource.ACSProxyInterface;
 import java.util.Map;
 import spark.Request;
 import spark.Response;
@@ -8,9 +8,9 @@ import spark.Route;
 
 public class CensusHandler implements Route {
 
-  private final CachingCensusDataSource datasource;
+  private final ACSProxyInterface datasource;
 
-  public CensusHandler(CachingCensusDataSource datasource) {
+  public CensusHandler(ACSProxyInterface datasource) {
     this.datasource = datasource;
   }
 

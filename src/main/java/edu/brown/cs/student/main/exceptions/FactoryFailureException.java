@@ -20,6 +20,10 @@ public class FactoryFailureException extends APIException {
     this.row = new ArrayList<>(row);
   }
 
+  /**
+   * Returns the error code.
+   * @return String that represents the error code.
+   */
   @Override
   public String getErrorCode() {
     return "error_factory_failure";

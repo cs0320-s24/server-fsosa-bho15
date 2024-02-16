@@ -17,19 +17,21 @@ import org.jetbrains.annotations.NotNull;
 /**
  * This class serves as a proxy class that makes API requests to the ACS website if necessary,
  * and if not necessary takes the result from the cache.
+ * It implements the CensusDataSource interface, which allows developers to swap in a different
+ * proxy class for getting the data, if they wish.
  */
-public class CachingCensusDataSource implements CensusDataSource {
+public class CachingACSDataSource implements ACSProxyInterface {
 
   private final LoadingCache<List<String>, List<List<String>>> cache;
 
   /**
    * The constructor takes in options for how to set up the cache, and uses those options to create it.
    *
-   * @param useCache whether or not the developer wants to cache at all.
+   * @param useCache whether the developer wants to cache at all.
    * @param maxSize the maximum number of entries in the cache at a given time.
    * @param minutesBeforeRemoval the number of minutes an entry in the cache will stay.
    */
-  public CachingCensusDataSource(boolean useCache, int maxSize, int minutesBeforeRemoval) {
+  public CachingACSDataSource(boolean useCache, int maxSize, int minutesBeforeRemoval) {
     if (!useCache) {
       maxSize = 0;
       minutesBeforeRemoval = 0;
@@ -45,7 +47,7 @@ public class CachingCensusDataSource implements CensusDataSource {
                   @Override
                   public List<List<String>> load(@NotNull List<String> strings)
                       throws DataSourceException, BadRequestException, IOException {
-                    return DataSource.accessAPI(strings.get(0), strings.get(1));
+                    return ACSDataSource.accessAPI(strings.get(0), strings.get(1));
                   }
                 });
   }
@@ -69,9 +71,8 @@ public class CachingCensusDataSource implements CensusDataSource {
       if (percent < 0.0 || percent > 100.0) {
         throw new DataSourceException("Percentage is incorrectly reported on census API.");
       }
-    } catch (Exception e) {
-      // TODO: make the error specific
-      responseMap.put("result", "error");
+    } catch (DataSourceException e) {
+      responseMap.put("result", e.getErrorCode());
       responseMap.put("message", e.getMessage());
       return responseMap;
     }

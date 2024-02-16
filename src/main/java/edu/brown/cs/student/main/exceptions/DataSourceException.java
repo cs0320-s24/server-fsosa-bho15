@@ -1,5 +1,8 @@
 package edu.brown.cs.student.main.exceptions;
 
+/**
+ * Exception that represents an issue with the datasource.
+ */
 public class DataSourceException extends APIException {
 
   public DataSourceException(String message) {
@@ -10,6 +13,10 @@ public class DataSourceException extends APIException {
     super(message, cause);
   }
 
+  /**
+   * Returns error code for this exception.
+   * @return String that represents the error code.
+   */
   @Override
   public String getErrorCode() {
     return "error_datasource";

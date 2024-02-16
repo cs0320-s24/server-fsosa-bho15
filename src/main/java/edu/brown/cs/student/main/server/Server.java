@@ -2,7 +2,7 @@ package edu.brown.cs.student.main.server;
 
 import static spark.Spark.after;
 
-import edu.brown.cs.student.main.datasource.CachingCensusDataSource;
+import edu.brown.cs.student.main.datasource.CachingACSDataSource;
 import spark.Spark;
 
 public class Server {
@@ -17,7 +17,7 @@ public class Server {
         });
 
     LoadCSVHandler loadHandler = new LoadCSVHandler();
-    CachingCensusDataSource dataSource = new CachingCensusDataSource(true, 10, 1);
+    CachingACSDataSource dataSource = new CachingACSDataSource(true, 10, 1);
 
     Spark.get("load", loadHandler);
     Spark.get("view", new ViewCSVHandler(loadHandler));
