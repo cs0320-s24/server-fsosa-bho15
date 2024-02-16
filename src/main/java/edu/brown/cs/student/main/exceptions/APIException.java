@@ -1,8 +1,6 @@
 package edu.brown.cs.student.main.exceptions;
 
-/**
- * Abstract class that includes a way to get the error code for the response map.
- */
+/** Abstract class that includes a way to get the error code for the response map. */
 public abstract class APIException extends Exception {
   private final Throwable cause;
 
@@ -18,6 +16,7 @@ public abstract class APIException extends Exception {
 
   /**
    * Returns the cause of the error
+   *
    * @return a Throwable object that represents the cause.
    */
   public Throwable getCause() {
@@ -26,6 +25,7 @@ public abstract class APIException extends Exception {
 
   /**
    * Gets the error code for the responseMap.
+   *
    * @return error code.
    */
   public String getErrorCode() {

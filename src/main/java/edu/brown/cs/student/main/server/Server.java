@@ -5,9 +5,7 @@ import static spark.Spark.after;
 import edu.brown.cs.student.main.datasource.CachingACSDataSource;
 import spark.Spark;
 
-/**
- * The entry point to our program, which initializes the handlers.
- */
+/** The entry point to our program, which initializes the handlers. */
 public class Server {
   public static void main(String[] args) {
     int port = 3241;
@@ -20,7 +18,7 @@ public class Server {
         });
 
     LoadCSVHandler loadHandler = new LoadCSVHandler();
-    CachingACSDataSource dataSource = new CachingACSDataSource(true, 10, 1);
+    CachingACSDataSource dataSource = new CachingACSDataSource(true, 10, 1, false);
 
     Spark.get("load", loadHandler);
     Spark.get("view", new ViewCSVHandler(loadHandler));

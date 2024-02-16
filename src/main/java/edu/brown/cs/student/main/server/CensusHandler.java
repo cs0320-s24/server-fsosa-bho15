@@ -1,14 +1,11 @@
 package edu.brown.cs.student.main.server;
 
 import edu.brown.cs.student.main.datasource.ACSProxyInterface;
-import java.util.Map;
 import spark.Request;
 import spark.Response;
 import spark.Route;
 
-/**
- * Handler class that represents the broadband endpoint.
- */
+/** Handler class that represents the broadband endpoint. */
 public class CensusHandler implements Route {
 
   private final ACSProxyInterface datasource;

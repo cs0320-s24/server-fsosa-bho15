@@ -12,9 +12,7 @@ import java.util.List;
 import java.util.Map;
 import okio.Buffer;
 
-/**
- * This class represents the ACS datasource.
- */
+/** This class represents the ACS datasource. */
 public class ACSDataSource {
   public static Map<String, String> stateCodes = new HashMap<>();
 
@@ -28,8 +26,7 @@ public class ACSDataSource {
    * @throws DataSourceException if there is an issue with the data source.
    * @throws IOException if there is an issue reading the data source.
    */
-  private static String getStateCode(String state)
-      throws DataSourceException, IOException {
+  private static String getStateCode(String state) throws DataSourceException, IOException {
     if (stateCodes.isEmpty()) {
       URL statesURL = new URL("https://api.census.gov/data/2010/dec/sf1?get=NAME&for=state:*");
       HttpURLConnection statesJson = ACSDataSource.connect(statesURL);
@@ -72,6 +69,7 @@ public class ACSDataSource {
 
   /**
    * Method that access the API to get certain information.
+   *
    * @param state String that represents the state.
    * @param county String that represents the county.
    * @return List of matches.
@@ -110,6 +108,7 @@ public class ACSDataSource {
 
   /**
    * Creates an HttpURLConnection given a request URL.
+   *
    * @param requestURL URL for the connection.
    * @return HttpURLConnection that can be accessed later.
    * @throws DataSourceException if the connection could not be made.
