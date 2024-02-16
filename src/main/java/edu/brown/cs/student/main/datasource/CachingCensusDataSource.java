@@ -14,10 +14,21 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * This class serves as a proxy class that makes API requests to the ACS website if necessary,
+ * and if not necessary takes the result from the cache.
+ */
 public class CachingCensusDataSource implements CensusDataSource {
 
   private final LoadingCache<List<String>, List<List<String>>> cache;
 
+  /**
+   * The constructor takes in options for how to set up the cache, and uses those options to create it.
+   *
+   * @param useCache whether or not the developer wants to cache at all.
+   * @param maxSize the maximum number of entries in the cache at a given time.
+   * @param minutesBeforeRemoval the number of minutes an entry in the cache will stay.
+   */
   public CachingCensusDataSource(boolean useCache, int maxSize, int minutesBeforeRemoval) {
     if (!useCache) {
       maxSize = 0;
@@ -39,6 +50,12 @@ public class CachingCensusDataSource implements CensusDataSource {
                 });
   }
 
+  /**
+   * Fills in a response map, either by accessing the cache or by making a new API request.
+   * @param state a String representing the state name.
+   * @param county a String representing the county name.
+   * @return a map that describes our results.
+   */
   @Override
   public Map<String, Object> getCensusData(String state, String county) {
     Map<String, Object> responseMap = new HashMap<>();
