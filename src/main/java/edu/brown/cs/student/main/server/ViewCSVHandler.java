@@ -13,6 +13,9 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 
+/**
+ * The ViewCSVHandler deals with requests with the view endpoint.
+ */
 public class ViewCSVHandler implements Route {
 
   private final LoadCSVHandler loadHandler;
@@ -21,6 +24,12 @@ public class ViewCSVHandler implements Route {
     this.loadHandler = loadHandler;
   }
 
+  /**
+   * Does not need to take in any parameters, returns the full view of the CSV.
+   * @param request unused here.
+   * @param response unused here.
+   * @return the responseMap with details of the action.
+   */
   @Override
   public Object handle(Request request, Response response) {
     Moshi moshi = new Moshi.Builder().build();

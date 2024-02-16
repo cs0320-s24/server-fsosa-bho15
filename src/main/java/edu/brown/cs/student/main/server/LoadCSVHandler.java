@@ -19,6 +19,9 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 
+/**
+ * The LoadCSVHandler deals with the load endpoint.
+ */
 public class LoadCSVHandler implements Route {
 
   private Parser<List<String>> parser;
@@ -29,6 +32,12 @@ public class LoadCSVHandler implements Route {
     this.csv = null;
   }
 
+  /** Takes in the filepath to access the request.
+   *
+   * @param request provided through the Browser.
+   * @param response unused here.
+   * @return responseMap with information about the load's success.
+   */
   @Override
   public Object handle(Request request, Response response) {
     Moshi moshi = new Moshi.Builder().build();
@@ -48,6 +57,12 @@ public class LoadCSVHandler implements Route {
     return adapter.toJson(responseMap);
   }
 
+  /**
+   * Load method updates the parser that is contained within the LoadCSVHandler.
+   *
+   * @param filepath to the CSV.
+   * @throws DataSourceException thrown if there is an error with the source.
+   */
   private void load(String filepath) throws DataSourceException {
     try {
       FileReader fileReader = new FileReader("data/" + filepath);
@@ -58,6 +73,13 @@ public class LoadCSVHandler implements Route {
     }
   }
 
+  /**
+   * Grabs the CSV from the parser.
+   *
+   * @return the CSV stored within the class.
+   * @throws IOException if there is an issue reading the file.
+   * @throws FactoryFailureException if there is an issue parsing the file.
+   */
   public List<List<String>> getCSV() throws IOException, FactoryFailureException {
     if (this.csv == null) {
       this.csv = this.parser.parse(new GeneralCreatorFromRow());
@@ -65,6 +87,10 @@ public class LoadCSVHandler implements Route {
     return this.csv;
   }
 
+  /**
+   * Gets the parser for use by the SearchCSVHandler.
+   * @return the parser.
+   */
   public Parser<List<String>> getCSVParser() {
     return this.parser;
   }

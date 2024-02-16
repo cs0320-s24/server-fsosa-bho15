@@ -14,6 +14,9 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 
+/**
+ * SearchCSVHandler handles requests with the search endpoint.
+ */
 public class SearchCSVHandler implements Route {
 
   private final LoadCSVHandler loadHandler;
@@ -24,6 +27,12 @@ public class SearchCSVHandler implements Route {
     this.search = null;
   }
 
+  /**
+   * Handles requests, given parameters for searching the CSV.
+   * @param request contains column name, index, attribute, etc.
+   * @param response unused here.
+   * @return the responseMap.
+   */
   @Override
   public Object handle(Request request, Response response) {
     Moshi moshi = new Moshi.Builder().build();

@@ -5,6 +5,9 @@ import static spark.Spark.after;
 import edu.brown.cs.student.main.datasource.CachingACSDataSource;
 import spark.Spark;
 
+/**
+ * The entry point to our program, which initializes the handlers.
+ */
 public class Server {
   public static void main(String[] args) {
     int port = 3241;
