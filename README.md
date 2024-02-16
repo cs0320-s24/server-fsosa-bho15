@@ -25,3 +25,19 @@ The cache test class checks that the cache is operating on the census data prope
 mvn package to compile and run tests
 
 ./run to start up server on localhost:3241
+
+To use the endpoints:
+
+load - localhost:3241/load?filepath=[INPUT CSV FILE HERE]
+
+view - localhost:3241/view
+
+search - localhost:3241/search?attribute=[DESIRED ATTRIBUTE HERE]
+
+optionally, to specify a columnIndex or columnName - 
+
+localhost:3241/search?attribute=[DESIRED ATTRIBUTE HERE]&columnName=[COLUMN NAME HERE] or 
+
+localhost:3241/search?attribute=[DESIRED ATTRIBUTE HERE]&columnIndex=[COLUMN INDEX HERE]
+
+broadband - localhost:3241/broadband?state=[STATE NAME]&county=[COUNTY NAME]
