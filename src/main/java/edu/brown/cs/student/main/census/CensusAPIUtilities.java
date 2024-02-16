@@ -8,9 +8,7 @@ import java.lang.reflect.Type;
 import java.util.List;
 import okio.Buffer;
 
-/**
- * Class containing functionality to deserialize a JSON into Java objects.
- */
+/** Class containing functionality to deserialize a JSON into Java objects. */
 public class CensusAPIUtilities {
 
   /**
