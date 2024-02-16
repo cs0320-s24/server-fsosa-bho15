@@ -31,25 +31,43 @@ public class CachingACSDataSource implements ACSProxyInterface {
    * @param maxSize the maximum number of entries in the cache at a given time.
    * @param minutesBeforeRemoval the number of minutes an entry in the cache will stay.
    */
-  public CachingACSDataSource(boolean useCache, int maxSize, int minutesBeforeRemoval) {
+  public CachingACSDataSource(
+      boolean useCache, int maxSize, int minutesBeforeRemoval, boolean isMock) {
     if (!useCache) {
       maxSize = 0;
       minutesBeforeRemoval = 0;
     }
-    this.cache =
-        CacheBuilder.newBuilder()
-            .maximumSize(maxSize)
-            .expireAfterWrite(minutesBeforeRemoval, TimeUnit.MINUTES)
-            .recordStats()
-            .build(
-                new CacheLoader<>() {
-                  @NotNull
-                  @Override
-                  public List<List<String>> load(@NotNull List<String> strings)
-                      throws DataSourceException, BadRequestException, IOException {
-                    return ACSDataSource.accessAPI(strings.get(0), strings.get(1));
-                  }
-                });
+    if (!isMock) {
+      this.cache =
+          CacheBuilder.newBuilder()
+              .maximumSize(maxSize)
+              .expireAfterWrite(minutesBeforeRemoval, TimeUnit.MINUTES)
+              .recordStats()
+              .build(
+                  new CacheLoader<>() {
+                    @NotNull
+                    @Override
+                    public List<List<String>> load(@NotNull List<String> strings)
+                        throws DataSourceException, BadRequestException, IOException {
+                      return ACSDataSource.accessAPI(strings.get(0), strings.get(1));
+                    }
+                  });
+    } else {
+      this.cache =
+          CacheBuilder.newBuilder()
+              .maximumSize(maxSize)
+              .expireAfterWrite(minutesBeforeRemoval, TimeUnit.MINUTES)
+              .recordStats()
+              .build(
+                  new CacheLoader<>() {
+                    @NotNull
+                    @Override
+                    public List<List<String>> load(@NotNull List<String> strings)
+                        throws DataSourceException, BadRequestException, IOException {
+                      return MockACSDataSource.accessAPI(strings.get(0), strings.get(1));
+                    }
+                  });
+    }
   }
 
   /**
@@ -83,5 +101,9 @@ public class CachingACSDataSource implements ACSProxyInterface {
     responseMap.put("county", county);
     responseMap.put("percentage", percentage);
     return responseMap;
+  }
+
+  public LoadingCache<List<String>, List<List<String>>> getCache() {
+    return this.cache;
   }
 }

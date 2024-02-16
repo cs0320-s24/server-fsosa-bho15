@@ -1,4 +1,4 @@
-package edu.brown.cs.student;
+package edu.brown.cs.student.test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -26,7 +26,7 @@ public class UnitTest {
   @BeforeEach
   public void setup() {
     LoadCSVHandler loadHandler = new LoadCSVHandler();
-    CachingACSDataSource dataSource = new CachingACSDataSource(true, 10, 1);
+    CachingACSDataSource dataSource = new CachingACSDataSource(true, 10, 1, false);
 
     Spark.get("load", loadHandler);
     Spark.get("view", new ViewCSVHandler(loadHandler));

@@ -18,7 +18,7 @@ public class Server {
         });
 
     LoadCSVHandler loadHandler = new LoadCSVHandler();
-    CachingACSDataSource dataSource = new CachingACSDataSource(true, 10, 1);
+    CachingACSDataSource dataSource = new CachingACSDataSource(true, 10, 1, false);
 
     Spark.get("load", loadHandler);
     Spark.get("view", new ViewCSVHandler(loadHandler));
