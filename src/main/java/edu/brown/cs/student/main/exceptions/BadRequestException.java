@@ -1,8 +1,6 @@
 package edu.brown.cs.student.main.exceptions;
 
-/**
- * Exception that represents a malformed API request.
- */
+/** Exception that represents a malformed API request. */
 public class BadRequestException extends APIException {
 
   public BadRequestException(String message) {
@@ -15,6 +13,7 @@ public class BadRequestException extends APIException {
 
   /**
    * Returns the specified error code for this exception.
+   *
    * @return String representing the error code.
    */
   @Override

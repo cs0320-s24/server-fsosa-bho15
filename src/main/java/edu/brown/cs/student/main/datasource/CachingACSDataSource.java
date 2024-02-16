@@ -15,10 +15,9 @@ import java.util.concurrent.TimeUnit;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * This class serves as a proxy class that makes API requests to the ACS website if necessary,
- * and if not necessary takes the result from the cache.
- * It implements the CensusDataSource interface, which allows developers to swap in a different
- * proxy class for getting the data, if they wish.
+ * This class serves as a proxy class that makes API requests to the ACS website if necessary, and
+ * if not necessary takes the result from the cache. It implements the CensusDataSource interface,
+ * which allows developers to swap in a different proxy class for getting the data, if they wish.
  */
 public class CachingACSDataSource implements ACSProxyInterface {
 

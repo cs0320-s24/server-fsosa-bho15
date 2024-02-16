@@ -1,8 +1,6 @@
 package edu.brown.cs.student.main.exceptions;
 
-/**
- * This is an error provided when an attribute provided does not exist in the csv.
- *  */
+/** This is an error provided when an attribute provided does not exist in the csv. */
 public class MissingAttributeException extends APIException {
 
   final String attribute;
@@ -25,6 +23,7 @@ public class MissingAttributeException extends APIException {
 
   /**
    * Returns the error code.
+   *
    * @return String representing the error code.
    */
   @Override

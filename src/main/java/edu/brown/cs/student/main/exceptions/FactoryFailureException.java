@@ -22,6 +22,7 @@ public class FactoryFailureException extends APIException {
 
   /**
    * Returns the error code.
+   *
    * @return String that represents the error code.
    */
   @Override

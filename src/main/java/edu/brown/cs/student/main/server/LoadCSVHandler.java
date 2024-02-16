@@ -19,9 +19,7 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 
-/**
- * The LoadCSVHandler deals with the load endpoint.
- */
+/** The LoadCSVHandler deals with the load endpoint. */
 public class LoadCSVHandler implements Route {
 
   private Parser<List<String>> parser;
@@ -32,7 +30,8 @@ public class LoadCSVHandler implements Route {
     this.csv = null;
   }
 
-  /** Takes in the filepath to access the request.
+  /**
+   * Takes in the filepath to access the request.
    *
    * @param request provided through the Browser.
    * @param response unused here.
@@ -89,6 +88,7 @@ public class LoadCSVHandler implements Route {
 
   /**
    * Gets the parser for use by the SearchCSVHandler.
+   *
    * @return the parser.
    */
   public Parser<List<String>> getCSVParser() {
